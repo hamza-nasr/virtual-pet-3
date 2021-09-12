@@ -21,6 +21,12 @@ function setup() {
 	createCanvas(1000, 400);
   foodObj=new Food();
   database=firebase.database();
+  fedTime=database.ref("feedTime")
+fedTime.on("value", function(data){
+  lastFed=data.val();
+  console.log(lastFed);
+})
+  
   dog=createSprite(250,270,40,40)
   dog.addImage(dogImage);
   dog.scale=0.15;
@@ -44,16 +50,22 @@ function setup() {
 function draw() {  
 background(46,139,87);
 //foodObj.display();
-fedTime=database.ref("feedTime")
+/*fedTime=database.ref("feedTime")
 fedTime.on("value", function(data){
   lastFed=data.val();
 })
-  drawSprites();
+*/
+  
   fill("white");
   textSize(15);
-  if(lastFed>=12){
+  if(lastFed>=11 && lastFed<12){
  text("lastFed:"+lastFed%12+"PM", 350, 30)
- }else{
+}
+else if(lastFed===12){
+  text("lastFed:"+lastFed+"PM", 350, 30)
+}
+else{ 
+   
   text("lastFed:"+lastFed+"AM", 350, 30)
  }
  currentTime=hour();
@@ -82,7 +94,7 @@ fedTime.on("value", function(data){
   addFood.show();
   dog.addImage(dogImage);
  }
-  
+ drawSprites();
 
 }
 function readStock(data){
@@ -105,5 +117,10 @@ function addFoods(){
   foodS++
   database.ref('/').update({
     food:foodS
+  })
+}
+function update(state){
+  database.ref().update({
+    gameState:state
   })
 }
